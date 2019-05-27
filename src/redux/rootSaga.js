@@ -1,8 +1,5 @@
-import { all } from 'redux-saga/effects';
-import profilesSagaWatcher from '../modules/ProfilesList/saga';
+import profilesSaga from '../modules/ProfilesList/saga';
 
-export default function* rootSaga() {
-    yield all([
-        profilesSagaWatcher(),
-    ]);
-}
+export default [
+    profilesSaga,
+];

@@ -2,11 +2,11 @@
 import Axios from 'axios';
 
 const url = 'https://randomapi.com/api/6de6abfedb24f889e0b5f675edc50deb?fmt=raw&sole';
+// Broken url
+// const url = 'https://randomapi.com/api/HELLO-6de6abfedb24f889e0b5f675edc50deb?fmt=raw&sole';
 
-export default async (timestamp) => {
-    throw new Error();
-
-    const { data } = await Axios.get(url);
+const parseResponse = (data, timestamp) => {
+    // throw new Error('I am a self inflicted error and hadles by saga!');
 
     const list = data
         .reduce((acc, { email, first, last }) => [...acc, {
@@ -19,3 +19,6 @@ export default async (timestamp) => {
         list,
     };
 };
+export default timestamp => Axios.get(url)
+    .then(({ data }) => ({ response: parseResponse(data, timestamp) }))
+    .catch(error => ({ error }));

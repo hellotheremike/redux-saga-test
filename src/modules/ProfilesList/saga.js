@@ -7,31 +7,53 @@ import getUsersService from './services/getUsersService';
 import { setUsers, setError } from './actions';
 
 
-// Selectors
+// // Selectors
 const getTimestamp = state => state.profiles.apiLoadTimestamp;
 
-// Actions
+// // Actions
 function* getUsersAction() {
-    // Try loading a failed resource 3 times
-    for (let i = 0; i < 3; i++) {
-        try {
-            yield put({ type: t.PROFILES_LOAD_START });
+    yield put({ type: t.PROFILES_LOAD_START });
 
-            const timestamp = yield select(getTimestamp);
-            const { users, list } = yield call(getUsersService, timestamp);
+    const timestamp = yield select(getTimestamp);
+    const { response, error } = yield call(getUsersService, timestamp);
 
-            yield put({ type: t.PROFILES_LOAD_COMPLETE });
-            yield put(setUsers(users, list));
-
-            return true;
-        } catch (e) {
-            // Error
-        }
+    if (response) {
+        const { users, list } = response;
+        yield put({ type: t.PROFILES_LOAD_COMPLETE });
+        yield put(setUsers(users, list));
     }
 
-    // If load failes, set error
-    yield put(setError('Failed to load 3 times'));
+    if (error) {
+        yield put(setError(error.message));
+    }
+
+    // throw new Error('This error will crash this saga');
 }
+
+
+// Retry 3 times if failed
+// function* getUsersAction() {
+//     // Try loading a failed resource 3 times
+//     for (let i = 0; i < 3; i++) {
+//         try {
+//             yield put({ type: t.PROFILES_LOAD_START });
+
+//             const timestamp = yield select(getTimestamp);
+//             const { response } = yield call(getUsersService, timestamp);
+//             const { users, list } = response;
+
+//             yield put({ type: t.PROFILES_LOAD_COMPLETE });
+//             yield put(setUsers(users, list));
+
+//             return true;
+//         } catch (e) {
+//             // Error
+//         }
+//     }
+
+//     // If load failes, set error
+//     yield put(setError('Failed to load 3 times'));
+// }
 
 
 // Watcher
