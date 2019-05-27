@@ -6,11 +6,10 @@ import * as t from './constants';
 import getUsersService from './services/getUsersService';
 import { setUsers, setError } from './actions';
 
-
 // // Selectors
 const getTimestamp = state => state.profiles.apiLoadTimestamp;
 
-// // Actions
+//  Actions
 function* getUsersAction() {
     yield put({ type: t.PROFILES_LOAD_START });
 
@@ -26,10 +25,7 @@ function* getUsersAction() {
     if (error) {
         yield put(setError(error.message));
     }
-
-    // throw new Error('This error will crash this saga');
 }
-
 
 // Retry 3 times if failed
 // function* getUsersAction() {
@@ -55,12 +51,28 @@ function* getUsersAction() {
 //     yield put(setError('Failed to load 3 times'));
 // }
 
+function* crashingSaga() {
+    throw new Error('This error will crash this saga!');
+}
 
-// Watcher
-export default function* profilesSagaWatcher() {
-    // Make sure profile is initiated
+// Watchers
+function* getUserWatcher() {
     yield take(t.PROFILES_INIT);
 
-    // Throttle api action to onyl be called once evey 5 sek
-    yield throttle(5000, t.PROFILES_LOAD, getUsersAction);
+    // Throttle api action to only be called once evey 5 sek
+    yield throttle(500, t.PROFILES_LOAD, getUsersAction);
+}
+
+
+// Watcher
+export default function* root() {
+    /* Throw random error to restart saga */
+    // throw new Error('This error will crash this saga');
+
+    /* Generator that will fail and crash */
+    // yield call(crashingSaga);
+
+    /* Generator that works */
+
+    yield call(getUserWatcher);
 }

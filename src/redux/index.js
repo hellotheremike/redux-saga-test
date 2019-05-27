@@ -1,6 +1,6 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import createSagaMiddleware from 'redux-saga';
-import { call, spawn } from 'redux-saga/effects';
+import { call, spawn, delay } from 'redux-saga/effects';
 import rootReducer from './rootReducer';
 import rootSaga from './rootSaga';
 
@@ -10,7 +10,9 @@ function* watcher(saga) {
             yield call(saga);
             break;
         } catch (error) {
+            // Log error and restart saga within 2sek
             console.error('Saga crash:', error);
+            yield delay(2000);
         }
     }
 }
