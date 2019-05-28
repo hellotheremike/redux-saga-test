@@ -20,6 +20,8 @@ export default (state = initialState, action) => {
             loading: false,
         });
     case t.PROFILES_SET:
+        console.log(action);
+
         return Object.assign({}, state, {
             users: action.meta.users,
             list: action.meta.list,
