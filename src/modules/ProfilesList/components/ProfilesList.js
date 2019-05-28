@@ -11,9 +11,7 @@ class ProfilesList extends React.Component {
     }
 
     render() {
-        const {
-            listData, isLoading, errorMessage, hasError,
-        } = this.props;
+        const { listData } = this.props;
 
         return (
             <Fragment>
@@ -21,9 +19,7 @@ class ProfilesList extends React.Component {
                     Update list data
                 </button>
 
-                {isLoading === true && <h4>Loading...</h4> }
-                {hasError === true && <h4>{errorMessage}</h4> }
-                {isLoading === false && <List items={listData}/>}
+                <List items={listData}/>
 
             </Fragment>
         );
